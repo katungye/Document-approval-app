@@ -40,6 +40,7 @@ const AuthController = {
             // Create access and refresh tokens
             const accessToken = createAccessToken(user);
             const refreshToken = createRefreshToken(user);
+           
 
             res.json({ accessToken, refreshToken });
         });

@@ -39,6 +39,11 @@ app.get('/register', (req, res) => {
   res.render('register');
 });
 
+// status pages
+app.get('/status', (req, res) => {
+  res.render('status');
+});
+
 // Start the server
 app.listen(port, ip, () => {
   console.log(`Server running at http://${ip}:${port}/`);

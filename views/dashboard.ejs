@@ -4,30 +4,276 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-   <!-- DataTables CSS -->
-   <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.min.css">
-   <!-- jQuery -->
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   <!-- DataTables JS -->
-   <script src="https://cdn.datatables.net/2.1.7/js/dataTables.min.js"></script>
-   <link rel="stylesheet" href="css/styles.css">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.dataTables.min.css">
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/2.1.7/js/dataTables.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Menu</h2>
-    <ul>
-      <li><a href="#Home" id="home-link">Home</a></li>
-      <li><a href="#assets" id="assets-link">Assets Invetory</a></li>
-      <li><a href="#Context" id="profile-link">Context Documents</a></li>
-      <li><a href="#profile" id="profile-link">My Profile</a></li>
-      <li><a href="#logout" id="logout-link">Logout</a></li>
-    </ul>
-  </div>
+  <div class="dashboard">
+    <div class="sidebar">
+      <h2>Menu</h2>
+      <ul>
+        <li><a href="#" id="home-link">Home</a></li>
+        <li><a href="#" id="user-link">User Mangement</a></li>
+        <li><a href="#" id="context-link">Context Documents</a></li>
+        <li><a href="#" id="profile-link">My Profile</a></li>
+        <li><a href="#" id="logout-link">Logout</a></li>
+      </ul>
+    </div>
 
-  <div class="main-content">
-    <h1>Welcome to the Dashboard</h1>
-    <div id="content">
-      <p>Select a link from the sidebar to view the content.</p>
+    <div class="main-content">
+      <h1>Welcome to the Dashboard</h1>
+      <div id="content">
+
+        <section id="home-section" class="section active">
+          <h2>Home</h2>
+          <p>Welcome! Here you can see an overview of the statuses.</p>
+          
+          <!-- Statuses Summary Cards -->
+          <h3>Statuses Summary</h3>
+          <div class="statuses-summary-cards">
+            <div class="card">
+              <h4>Pending Admin Review</h4>
+              <p id="pending-admin-review-count">0</p>
+            </div>
+            <div class="card">
+              <h4>Rejected by Admin</h4>
+              <p id="rejected-by-admin-count">0</p>
+            </div>
+            <div class="card">
+              <h4>Pending Approval</h4>
+              <p id="pending-approval-count">0</p>
+            </div>
+            <div class="card">
+              <h4>Rejected by Approver</h4>
+              <p id="rejected-by-approver-count">0</p>
+            </div>
+            <div class="card">
+              <h4>Approved</h4>
+              <p id="approved-count">0</p>
+            </div>
+          </div>
+
+          <!-- toggled forms below-->
+          <h3>Manage Tasks</h3>
+          <div class="toggle-buttons">
+            <button class="toggle-button active" onclick="toggleDiv('roles')">Roles</button>
+            <button class="toggle-button" onclick="toggleDiv('tracker')">Tracker</button>
+            <button class="toggle-button" onclick="toggleDiv('approvals')">Approvals</button>
+          </div>
+
+          <div id="roles" class="toggle-div" style="display: block;">
+            <h5>Assign Role</h5>
+
+            <div class="form-container">
+              <form action="/search" method="POST">
+                  <div class="input-group">
+                      <label for="role">Select Role:</label>
+                      <select name="role" id="role" required>
+                          <option value="1">Contact Person</option>
+                          <option value="2">Admin</option>
+                          <option value="3">Approver</option>
+                          <option value="4">User</option>
+                      </select>
+                  </div>
+          
+                  <div class="input-group">
+                      <label for="name">Enter Name:</label>
+                      <input type="text" name="name" id="name" placeholder="Enter user's name" required>
+                  </div>
+          
+                  <div class="input-group">
+                      <button type="submit">Submit</button>
+                  </div>
+              </form>
+          </div>
+          
+
+          </div>
+          <div id="tracker" class="toggle-div">
+            
+            
+            <div class="tracker-container">
+              <h2>Document Update Tracker</h2>
+              
+              <div class="tracker-item">
+                  <div class="date">2024-10-01</div>
+                  <div class="update">Document created and submitted for review.</div>
+              </div>
+              
+              <div class="tracker-item">
+                  <div class="date">2024-10-03</div>
+                  <div class="update">Feedback received from the review committee.</div>
+              </div>
+              
+              <div class="tracker-item current"> <!-- Current update highlighted -->
+                  <div class="date">2024-10-05</div>
+                  <div class="update">Final review and testing completed.</div>
+              </div>
+              
+              <div class="tracker-item">
+                  <div class="date">2024-10-07</div>
+                  <div class="update">Document approved and finalized.</div>
+              </div>
+          </div>
+          
+          
+          
+
+          </div>
+          <div id="approvals" class="toggle-div">
+            <h5>Approvals</h5>
+            <p>Manage approvals here.</p>
+           
+            <div class="table-container">
+              <table id="documentTable" class="display">
+                  <thead>
+                      <tr>
+                          <th>Document Name</th>
+                          <th>Document ID</th>
+                          <th>Document Description</th>
+                          <th>Review</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>Sample Document</td>
+                          <td>123</td>
+                          <td>This is a sample document description.</td>
+                          <td> <a href="https://example.com/api/documents">Source</a></td>
+                          <td>Pending Approval</td>
+                          <td>
+                              <button class="approve-btn">Approve</button>
+                              <button class="reject-btn">Reject</button>
+                              <button class="recall-btn">Recall</button>
+                          </td>
+                      </tr>
+                      <!-- Additional rows can be dynamically added here -->
+                  </tbody>
+              </table>
+          </div>          
+
+          </div>
+
+        </section>
+
+        <section id="user-section" class="section">
+    
+          
+          <div class="access-table">
+            <h2>User Access Control</h2>
+            <table id="userAccessTable" class="display access-control-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Access</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Admin</td>
+                        <td>Approved</td>
+                        <td>
+                            <button class="action-btn approve-btn">Approve</button>
+                            <button class="action-btn revoke-btn">Revoke</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>User</td>
+                        <td>Pending</td>
+                        <td>
+                            <button class="action-btn approve-btn">Approve</button>
+                            <button class="action-btn revoke-btn">Revoke</button>
+                        </td>
+                    </tr>
+                    <!-- Additional rows can be added here -->
+                </tbody>
+            </table>
+        </div>
+        
+      
+
+        </section>
+
+        <section id="context-section" class="section">
+          <h2>Context Documents</h2>
+      
+          <div class="document-tracker-form">
+              <form id="trackerForm" action="/submit-tracker" method="POST">
+                  <label for="startDate">Start Date:</label>
+                  <input type="date" id="startDate" name="startDate" required>
+      
+                  <label for="endDate">End Date:</label>
+                  <input type="date" id="endDate" name="endDate" required>
+      
+                  <button type="submit" class="submit-button">Create Tracker</button>
+              </form>
+          </div>
+          <div class="document-table">
+          <h2>Document Tracker</h2>
+            <table id="documentTracker" class="display">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Document ID</th>
+                        <th>Tracker ID</th>
+                        <th>Interested Parties / Stakeholder</th>
+                        <th>Document Description</th>
+                        <th>Status</th>
+                        <th>Source</th>
+                        <th>Submited on</th>
+                        <th>Accepted on</th>
+                        <th>Approved on</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample data row (You can add more rows as needed) -->
+                    <tr>
+                        <td>Sample Document</td>
+                        <td>12345</td>
+                        <td>14545</td>
+                        <td>John Doe</td>
+                        <td>Description of the sample document.</td>
+                        <td>Pending</td>
+                        <td>www.example.com/sample.pdf</td>
+                        <td>2024-10-01</td>
+                        <td>2024-10-02</td>
+                        <td>2024-10-03</td>
+                    </tr>
+                    <!-- Additional rows can be added here -->
+                </tbody>
+            </table>
+        </div>
+      
+      </section>
+      
+
+        <section id="profile-section" class="section">
+          <h2>My Profile</h2>
+
+          <div class="profile-card">
+            <h3 class="name">John Doe</h3>
+            <p class="email">john.doe@example.com</p>
+            <button class="edit-password">Edit Password</button>
+        </div>
+        
+        </section>
+
+        <section id="logout-section" class="section">
+          <h2>Logout</h2>
+          <p>You have logged out.</p>
+        </section>
+      </div>
     </div>
   </div>
 

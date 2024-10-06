@@ -1,4 +1,13 @@
 /* Global Styles */
+/* Section visibility */
+.section {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +19,8 @@ body {
   background-color: #f4f4f4;
 }
 
-/* Login Page Styles */
+/* Login - register Page Styles */
+/* Centering the login-container */
 .login-container {
   display: flex;
   justify-content: center;
@@ -19,49 +29,69 @@ body {
   width: 100%;
 }
 
-.login-box {
-  background-color: #333;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  color: white;
+/* Centering the register-container */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Ensure form fields and buttons are vertically aligned */
+.login-box form, 
+.register-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Input groups styling with consistent width and alignment */
+.login-box .input-group,
+.register-box .input-group {
   width: 100%;
   max-width: 400px;
-}
-
-.login-box h2 {
-  text-align: center;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column; /* Ensure label and input align vertically */
 }
 
-.input-group {
-  margin-bottom: 20px;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-
-.input-group input {
+/* Input fields with improved color contrast */
+.login-box .input-group input,
+.register-box .input-group input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
-  border: none;
+  border: 1px solid #ccc; /* Light border for visibility */
+  background-color: #fff;  /* Light background for better contrast */
+  color: #333;             /* Dark text color for readability */
   outline: none;
+  box-sizing: border-box;  /* Ensure consistent box sizing */
 }
 
-.input-group input[type="text"],
-.input-group input[type="password"] {
+/* Ensure the labels have consistent widths */
+.login-box .input-group label,
+.register-box .input-group label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Change focus state for better visibility */
+.login-box .input-group input:focus,
+.register-box .input-group input:focus {
+  border-color: #575757;   /* Darker border when focused */
   background-color: #f4f4f4;
 }
 
-.input-group button {
+/* Buttons with improved contrast */
+.login-box .input-group button,
+.register-box .input-group button {
   width: 100%;
   padding: 10px;
-  background-color: #575757;
+  background-color: #333; /* Darker button background for contrast */
   border: none;
   border-radius: 5px;
   color: white;
@@ -70,16 +100,20 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.input-group button:hover {
-  background-color: #444;
+.login-box .input-group button:hover,
+.register-box .input-group button:hover {
+  background-color: #444; /* Darker hover state for buttons */
 }
 
-@media screen and (max-width: 768px) {
-  .login-box {
-    padding: 30px;
-    max-width: 350px;
-  }
+/* Adjusting the heading style for better visibility */
+.login-box h2,
+.register-box h2 {
+  color: #333; /* Darker text color for the headings */
+  margin-bottom: 20px;
+  text-align: center;
 }
+
+
 
 /* Dashboard Page Styles */
 .dashboard {
@@ -151,4 +185,412 @@ h1 {
   .main-content {
     margin-left: 200px;
   }
+}
+
+/* Container for the cards */
+.statuses-summary-cards {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+/* Individual card styling */
+.card {
+  background-color: #1D9A6C;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  width: 18%;
+}
+
+/* Card title styling */
+.card h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Card count number styling */
+.card p {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .statuses-summary-cards {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+/* form area for add role and add user */
+/* Toggle Buttons Styles */
+.toggle-buttons {
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the left */
+  gap: 10px; /* Add space between buttons */
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+/* Button Styles */
+.toggle-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button.active {
+  background-color: #0056b3;
+}
+
+/* Hidden Divs */
+.toggle-div {
+  display: none; /* Hide all toggle divs by default */
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+/* Form Container Styles */
+.form-container {
+  margin-bottom: 20px;
+}
+
+/* Input Group Styles */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333; /* Label color */
+}
+
+.input-group select,
+.input-group input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc; /* Border color */
+  background-color: #f4f4f4; /* Background color */
+}
+
+.input-group select:focus,
+.input-group input[type="text"]:focus {
+  border-color: #1D9A6C; /* Border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+
+/* Button Styles */
+.input-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1D9A6C; /* Button background color */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.input-group button:hover {
+    background-color: #155724; /* Darker green on hover */
+}
+
+
+/* add role form */
+
+/* Inline Form Styles */
+.form-container {
+  margin-bottom: 20px;
+}
+
+/* Make input group elements inline */
+.input-group {
+  display: inline-block; /* Inline layout */
+  vertical-align: middle;
+  margin-right: 10px; /* Space between elements */
+}
+
+/* Label Styles */
+.input-group label {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #333; /* Label color */
+  vertical-align: middle;
+  white-space: nowrap; /* Prevent label wrapping */
+}
+
+/* Dropdown and Input Styles */
+.input-group select,
+.input-group input[type="text"] {
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc; /* Border color */
+  background-color: #f4f4f4; /* Background color */
+  width: auto; /* Allow elements to fit inline */
+  vertical-align: middle; /* Align with labels */
+}
+
+/* Button Styles */
+.input-group button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #1D9A6C; /* Button background color */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  vertical-align: middle;
+}
+
+.input-group button:hover {
+  background-color: #155724; /* Darker green on hover */
+}
+
+/* approval and reject buttons */
+
+.approve-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.reject-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.recall-btn {
+  background-color: #4E6BFD;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.approve-btn:hover {
+  background-color: #218838;
+}
+
+.reject-btn:hover {
+  background-color: #c82333;
+}
+
+.recall-btn:hover {
+  background-color: #3455F9;
+}
+
+/* tracker update viewer */
+.tracker-container {
+  position: relative;
+  margin: 20px;
+  padding: 20px;
+  border-left: 2px solid #ccc; /* Vertical line */
+}
+
+.tracker-item {
+  margin: 10px 0;
+  padding-left: 20px; /* Space for the vertical line */
+  position: relative;
+}
+
+.tracker-item .date {
+  font-weight: bold;
+}
+
+.tracker-item.current {
+  color: #1D9A6C; /* Highlight current update */
+  font-weight: bold; /* Make the current update stand out */
+}
+
+.tracker-item::before {
+  content: '';
+  position: absolute;
+  left: -8px; /* Positioning for the line */
+  top: 0;
+  bottom: 0;
+  width: 4px; /* Line width */
+  background-color: #ccc; /* Line color */
+}
+
+.tracker-item.current::before {
+  background-color: #1D9A6C; /* Change color for the current update */
+}
+
+
+
+/* document Tracker Styles */
+#context-section .document-tracker-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px 0; /* Adjust margin as needed, or set to 0 to remove space */
+  background-color: #fff; /* Background color of the form */
+  padding: 20px; /* Padding around the form */
+  border-radius: 10px; /* Rounded corners */
+  border: none; /* Remove border if any */
+  box-shadow: none; /* Remove shadow effect */
+}
+
+#context-section .document-tracker-form label {
+  font-size: 14px;
+  margin-right: 10px; /* Space between label and input */
+  color: #333; /* Label color */
+}
+
+#context-section .document-tracker-form input[type="date"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc; /* Border color */
+  background-color: #f4f4f4; /* Background color */
+  transition: border-color 0.3s; /* Smooth transition for focus */
+  margin-right: 20px; /* Space between date fields */
+}
+
+#context-section .document-tracker-form input[type="date"]:focus {
+  border-color: #1D9A6C; /* Change border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+#context-section .document-tracker-form .submit-button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Button color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Font size for button */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+}
+
+#context-section .document-tracker-form .submit-button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* user access table buttons */
+
+.access-control-table .action-btn {
+  padding: 8px 12px; /* Adjust padding for buttons */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  color: white; /* Text color */
+  font-size: 14px; /* Font size */
+  cursor: pointer; /* Cursor pointer on hover */
+  margin-right: 5px; /* Space between buttons */
+  transition: background-color 0.3s; /* Transition effect */
+}
+
+.access-control-table .approve-btn {
+  background-color: #28a745; /* Green for approved */
+}
+
+.access-control-table .approve-btn:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.access-control-table .revoke-btn {
+  background-color: #dc3545; /* Red for revoke */
+}
+
+.access-control-table .revoke-btn:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* profile show */
+.profile-card {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  margin-top: 20px; /* Adjust space between section text and card */
+  border: 1px solid #e0e0e0; /* Optional: Add a light border for distinction */
+}
+
+.name {
+  margin: 0;
+  font-size: 20px; /* Adjust as needed */
+  color: #333;
+}
+
+.email {
+  color: #777;
+  margin: 10px 0 15px; /* Adjust margin as needed */
+}
+
+.edit-password {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px; /* Adjust as needed */
+}
+
+.edit-password:hover {
+  background-color: #0056b3;
+}
+
+/* status code page*/
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+  justify-content: center; /* Center the content vertically */
+  height: 100vh; /* Full height of the viewport */
+}
+
+.center-image {
+  max-width: 200px; /* Adjust this value for smaller size */
+  max-height: 200px; /* Adjust this value for smaller size */
+  width: auto; /* Maintain aspect ratio */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.status-code-container {
+  text-align: center; /* Center text inside the div */
+  font-family: Arial, sans-serif; /* Font style */
+  margin-top: 20px; /* Space between image and text */
+}
+
+h2.status-code {
+  margin: 0; /* Remove default margin */
 }
