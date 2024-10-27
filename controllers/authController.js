@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // controllers/authController.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -48,3 +49,67 @@ const AuthController = {
 };
 
 module.exports = AuthController;
+=======
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
+const User = require('../models/user');
+const dotenv = require('dotenv');
+//const { use } = require('../routes/authRoutes');
+
+dotenv.config();
+
+exports.register = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { fname, lname, email, password, role } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ fname, lname, email, password: hashedPassword, role });
+    //res.status(201).json({ message: 'User registered successfully', user });
+    // After successful registration, redirect to the login page
+     res.redirect('/');
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to register user' });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.SECRET_KEY, { expiresIn: '1h' });
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }); // Add secure flag if in production
+    return res.redirect('/dashboard'); // Redirect after setting the cookie
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to log in' });
+  }
+};
+
+
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll(); 
+    res.render('users', { users }); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/login');
+};
+>>>>>>> 3aaf9b0 (Initial commit)
