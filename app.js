@@ -1,61 +1,47 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const userRoutes = require('./routes/userRoutes');
-const assetRoutes = require('./routes/assetRoutes');
+const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
-require('dotenv').config()
-const app = express();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const documentRoutes = require('./routes/documentRoutes');
+const contextRoutes = require('./routes/contextRoutes');
+const cookieParser = require('cookie-parser');
+const sequelize = require('./config/db'); // Your Sequelize config
 
-//ejs
+
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
+const IP = process.env.IP || '127.0.0.1';
+
+const app = express();
 app.set('view engine', 'ejs');
 
-const port = process.env.PORT || 3000;
-const ip = process.env.IP || '127.0.0.1';
-const db = require('./config/config');
+// Middleware setup
+app.use(express.static('public')); // Serve static files from the public directory
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+app.use(express.json()); // Parse JSON data
+app.use(cookieParser()); // Parse cookies
 
-//public
-app.use(express.static('public'));
+//uploadfolder 
+app.use('/uploads', express.static('uploads'));
 
-app.use(bodyParser.json()); // To parse JSON request bodies
+// Use authentication routes
+app.use('/', authRoutes);
+// Use document routes
+app.use('/document', documentRoutes);  
+// Use the route for context tracker
+app.use('/context', contextRoutes);
 
-// Routes
-app.use('/users', userRoutes);
-app.use('/assets', assetRoutes);
-app.use('/auth', authRoutes);
 
-// the ejs dashboard
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard');
-});
-//  the ejs login
-app.get('/', (req, res) => {
-  res.render('login');
-});
 
-//  the ejs register
-app.get('/register', (req, res) => {
-  res.render('register');
-});
-
-// status pages
-app.get('/status', (req, res) => {
-  res.render('status');
-});
-
-// Start the server
-app.listen(port, ip, () => {
-  console.log(`Server running at http://${ip}:${port}/`);
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-  db.close((err) => {
-      if (err) {
-          console.error('Error closing database ' + err.message);
-      }
-      console.log('Database connection closed.');
-      process.exit(0);
-  });
-});
+// Synchronize the database
+sequelize.sync({ alter: true }) // Alter tables to fit the model definitions
+    .then(() => {
+        console.log('Database synchronized');
+        // Start the server only after the database sync is successful
+        app.listen(PORT, IP, () => {
+            console.log(`Server running on http://${IP}:${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error('Error syncing database:', err);
+    });
