@@ -1,0 +1,97 @@
+
+<div class="container">
+    <div class="d-flex" id="wrapper">
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item"><a class="nav-link" href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <h1 class="mt-4">Doc Tracker</h1>
+                <% if (user) { %>
+                    <p>Welcome, <%= user.fname %>!</p>
+                <div class="row">
+                    <div class="col-md-3">
+                   <!-- views/user.ejs -->
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Approved</td>
+                                    <td>Total Approved Documents: <%= approvedCount %></td>
+                                </tr>
+                                <tr>
+                                    <td>Reviewed</td>
+                                    <td>Total Reviewed Documents: <%= reviewedCount %></td>
+                                </tr>
+                                <tr>
+                                    <td>Rejected</td>
+                                    <td>Total Rejected Documents: <%= rejectedCount %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8">
+                        <p>Submit a context information Here</p>
+                        <form action="/context/submit" method="POST">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-control" id="category" name="category" required>
+                                    <option value="internal">Internal</option>
+                                    <option value="external">External</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="factor" class="form-label">Factor</label>
+                                <select class="form-control" id="factor" name="factor" required>
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="services" class="form-label">Services</label>
+                                <input type="text" class="form-control" id="services" name="services">
+                            </div>
+                            <div class="mb-3">
+                                <label for="assets" class="form-label">Assets</label>
+                                <input type="text" class="form-control" id="assets" name="assets">
+                            </div>
+                            <div class="mb-3">
+                                <label for="documentation" class="form-label">Documentation</label>
+                                <input type="text" class="form-control" id="documentation" name="documentation">
+                            </div>
+                            <div class="mb-3">
+                                <label for="stakeholders" class="form-label">Stakeholders</label>
+                                <input type="text" class="form-control" id="stakeholders" name="stakeholders">
+                            </div>
+                            <div class="mb-3">
+                                <label for="legal" class="form-label">Legal</label>
+                                <input type="text" class="form-control" id="legal" name="legal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="location" name="location">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <% } else { %>
+                    <p>You are not authorized to view this page.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

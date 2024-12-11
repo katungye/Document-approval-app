@@ -1,0 +1,21 @@
+const Status = require('../models/status'); 
+
+async function seedStatuses() {
+    const statuses = ['submitted for review', 'under review', 'submitted for approval', 'rejected', 'approved'];
+
+    try {
+        for (const statusName of statuses) {
+            const [status, created] = await Status.findOrCreate({
+                where: { name: statusName },
+            });
+
+            if (created) {
+                console.log(`Status "${statusName}" created.`);
+            }
+        }
+    } catch (error) {
+        console.error('Error seeding statuses:', error);
+    }
+}
+
+module.exports = seedStatuses;

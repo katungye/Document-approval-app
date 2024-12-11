@@ -1,13 +1,5 @@
-# Ignore node_modules
+# Node.js dependencies
 node_modules/
 
-# Ignore compiled files
-*.log
-*.out
-*.class
-
-# Ignore database files
-*.sqlite3
-
-# Ignore environment variables
+# Environment files
 .env

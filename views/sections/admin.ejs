@@ -1,0 +1,238 @@
+<!-- views/sections/admin.ejs -->
+
+<div class="container">
+    <div class="d-flex" id="wrapper">
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item"><a class="nav-link" href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <h1 class="mt-4">Doc Tracker</h1>
+                <% if (user) { %>
+                    <p>Welcome, <%= user.fname %>!</p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Users</td>
+                                    <td>Total Users: <%= userCount %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Context</td>
+                                    <td>Total Context Submissions: <%= contextCount %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Approved</td>
+                                    <td>Total Approved Contexts: <%= approvedCount %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">4</th>
+                                    <td>Rejected</td>
+                                    <td>Total Rejected Contexts: <%= rejectedCount %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>Raw</td>
+                                    <td>Total Raw Contexts: <%= rawCount %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8">
+                        <h1>Admin Dashboard</h1>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="contextTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Category</th>
+                                            <th>Factor</th>
+                                            <th>Services</th>
+                                            <th>Assets</th>
+                                            <th>Documentation</th>
+                                            <th>Stakeholders</th>
+                                            <th>Legal</th>
+                                            <th>Location</th>
+                                            <th>Timestamp</th>
+                                            <th>Submitted By</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% contexts.forEach(context => { %>
+                                            <tr>
+                                                <td><%= context.id %></td>
+                                                <td><%= context.category %></td>
+                                                <td><%= context.factor %></td>
+                                                <td><%= context.services %></td>
+                                                <td><%= context.assets %></td>
+                                                <td><%= context.documentation %></td>
+                                                <td><%= context.stakeholders %></td>
+                                                <td><%= context.legal %></td>
+                                                <td><%= context.location %></td>
+                                                <td><%= context.timestamp %></td>
+                                                <td><%= context.submitter ? context.submitter.fname + ' ' + context.submitter.lname : 'N/A' %></td>
+                                                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateContextModal" data-id="<%= context.id %>" data-category="<%= context.category %>" data-factor="<%= context.factor %>" data-services="<%= context.services %>" data-assets="<%= context.assets %>" data-documentation="<%= context.documentation %>" data-stakeholders="<%= context.stakeholders %>" data-legal="<%= context.legal %>" data-location="<%= context.location %>">View</button></td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <% if (page > 1) { %>
+                                    <li class="page-item"><a class="page-link" href="?page=<%= page - 1 %>">Previous</a></li>
+                                <% } %>
+                                <% for (var i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= page === i ? 'active' : '' %>"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                                <% } %>
+                                <% if (page < totalPages) { %>
+                                    <li class="page-item"><a class="page-link" href="?page=<%= page + 1 %>">Next</a></li>
+                                <% } %>
+                            </ul>
+                        </nav>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <table id="userTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach(user => { %>
+                                            <tr>
+                                                <td><%= user.id %></td>
+                                                <td><%= user.fname %></td>
+                                                <td><%= user.lname %></td>
+                                                <td><%= user.email %></td>
+                                                <td><%= user.role.name %></td>
+                                                <td><button type="button" class="btn btn-primary" onclick="openUpdateUserRoleModal('<%= user.id %>', '<%= user.role.id %>')">Update</button></td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } else { %>
+                    <p>You are not authorized to view this page.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for updating user role -->
+<div class="modal fade" id="updateUserRoleModal" tabindex="-1" aria-labelledby="updateUserRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateUserRoleModalLabel">Update User Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateUserRoleForm">
+                    <input type="hidden" id="userId" name="id">
+                    <div class="mb-3">
+                        <label for="userRole" class="form-label">Role</label>
+                        <select class="form-control" id="userRole" name="role">
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id %>"><%= role.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for updating context -->
+<div class="modal fade" id="updateContextModal" tabindex="-1" aria-labelledby="updateContextModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateContextModalLabel">Update Context</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateContextForm" action="/context/update" method="POST">
+                    <input type="hidden" id="contextId" name="id">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="factor" class="form-label">Factor</label>
+                        <input type="text" class="form-control" id="factor" name="factor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="services" class="form-label">Services</label>
+                        <input type="text" class="form-control" id="services" name="services">
+                    </div>
+                    <div class="mb-3">
+                        <label for="assets" class="form-label">Assets</label>
+                        <input type="text" class="form-control" id="assets" name="assets">
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentation" class="form-label">Documentation</label>
+                        <input type="text" class="form-control" id="documentation" name="documentation">
+                    </div>
+                    <div class="mb-3">
+                        <label for="stakeholders" class="form-label">Stakeholders</label>
+                        <input type="text" class="form-control" id="stakeholders" name="stakeholders">
+                    </div>
+                    <div class="mb-3">
+                        <label for="legal" class="form-label">Legal</label>
+                        <input type="text" class="form-control" id="legal" name="legal">
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <% statuses.forEach(status => { %>
+                                <option value="<%= status.id %>"><%= status.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

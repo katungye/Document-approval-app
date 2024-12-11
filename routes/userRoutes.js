@@ -1,11 +1,12 @@
+// routes/userRoutes.js
+
 const express = require('express');
+const { updateUserRole } = require('../controllers/userController');
+const { isAuthenticated } = require('../middlewares/authMiddleware');
+
 const router = express.Router();
-const userController = require('../controllers/userController');
 
-// Get all users
-router.get('/allusers', userController.getAllUsers);
-
-// Add a new user
-router.post('/adduser', userController.addUser);
+// Update user role
+router.post('/updateRole', isAuthenticated, updateUserRole);
 
 module.exports = router;

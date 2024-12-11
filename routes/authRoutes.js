@@ -1,92 +1,80 @@
-<<<<<<< HEAD
-// routes/authRoutes.js
 const express = require('express');
-const router = express.Router();
-const AuthController = require('../controllers/authController');
-
-// Route for user registration
-router.post('/register', AuthController.register);
-
-// Route for user login
-router.post('/login', AuthController.login);
-=======
-const express = require('express');
-const { register, login, logout, getAllUsers, } = require('../controllers/authController');
-const { authenticateJWT, redirectIfAuthenticated, authorizeRole } = require('../middlewares/auth');
-const ContextEstablishment = require('../models/ContextEstablishment');
-const { body } = require('express-validator');
+const { registerUser, loginUser, logoutUser, allusers } = require('../controllers/authController');
+const { isAuthenticated, redirectIfAuthenticated, validateUserRegistration } = require('../middlewares/authMiddleware');
 const User = require('../models/user');
-const Document = require('../models/documents');
+const Role = require('../models/role');
+const Context = require('../models/context');
+const Status = require('../models/status');
+
 const router = express.Router();
 
-// rendering public pages
-router.get('/login', redirectIfAuthenticated, (req, res) => {
-    res.render('login');  // Render login page
-});
+// Public routes
+router.get('/login', redirectIfAuthenticated, (req, res) => res.render('login'));
+router.get('/register', redirectIfAuthenticated, (req, res) => res.render('register'));
 
-// Define a route for the root URL '/'
-router.get('/', redirectIfAuthenticated, (req, res) => {
-    res.redirect('/login');  // Redirects to login
-});
+// Register and login actions
+router.post('/register', redirectIfAuthenticated, validateUserRegistration, registerUser);
+router.post('/login', redirectIfAuthenticated, loginUser);
 
-router.get('/register', redirectIfAuthenticated,(req, res) => {
-    res.render('register');  // Render register page
-});
+// Logout - accessible only to authenticated users
+router.get('/logout', isAuthenticated, logoutUser);
 
-
-// sending data to the server
-router.post('/register', redirectIfAuthenticated,[
-    body('email').isEmail(),
-    body('password').isLength({ min: 5 })
-], register);
-
-router.post('/login', redirectIfAuthenticated,login);
-
-router.get('/logout', logout);
-
-//get users
-router.get('/users', authenticateJWT, authorizeRole(100), getAllUsers);
-
-
-// Rendering protected pages
-router.get('/dashboard', authenticateJWT, async (req, res) => {
+// Dashboard route
+router.get('/dashboard', isAuthenticated, async (req, res) => {
     try {
-        // Fetch all users from the database
-        const users = await User.findAll(); 
+        // Fetch user with role details
+        const userWithRole = await User.findOne({
+            where: { id: req.user.id },
+            include: { model: Role, as: 'role' }, // Ensure this matches your association
+        });
 
-        // Fetch all documents from the database
-        const documents = await Document.findAll(); 
-
-        // Fetch all trackers from the database
-        const trackers = await ContextEstablishment.findAll(); 
-
-        // Function to generate a reference code
-        const generateRefCode = () => {
-            return 'REF-' + Math.random().toString(36).substr(2, 9).toUpperCase(); // Example logic
-        };
-
-        // Render the dashboard and pass role, users, documents, and the generateRefCode function to the template
-        res.render('dashboard', { 
-            role: req.user.role, 
-            users, 
-            documents,
-            generateRefCode,
-            trackers 
-        }); 
-    } catch (err) {
-        console.error(err);
-        // Ensure you don't send a response after an error has already been sent
-        if (!res.headersSent) {
-            res.status(500).send('Error fetching users and documents for dashboard');
+        if (!userWithRole) {
+            return res.status(404).send('User not found.');
         }
+
+        if (userWithRole.status === 'inactive') {
+            return res.status(403).send('Your access is pending confirmation or has been revoked. Please contact the administrator.');
+        }
+
+        // Fetch counts
+        const userCount = await User.count();
+        const contextCount = await Context.count();
+        const approvedCount = await Context.count({ where: { stage: 5 } }); // Assuming 5 is the ID for approved
+        const rejectedCount = await Context.count({ where: { stage: 4 } }); // Assuming 4 is the ID for rejected
+        const rawCount = await Context.count({ where: { stage: 1 } }); // Assuming 1 is the ID for raw
+        const reviewedCount = await Context.count({ where: { stage: 2 } }); // Assuming 2 is the ID for reviewed
+
+        // Fetch statuses
+        const statuses = await Status.findAll();
+
+        // Fetch users and roles
+        const users = await User.findAll({ include: { model: Role, as: 'role' } });
+        const roles = await Role.findAll();
+
+        // Pagination logic
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10; // Number of contexts per page
+        const offset = (page - 1) * limit;
+
+        // Fetch context data with pagination
+        const { count, rows: contexts } = await Context.findAndCountAll({
+            include: [
+                { model: User, as: 'submitter' },
+                { model: Status, as: 'currentStage' },
+                { model: Status, as: 'previousStageStatus' }
+            ],
+            limit,
+            offset
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        res.render('dashboard', { user: userWithRole, contexts, page, totalPages, userCount, contextCount, approvedCount, rejectedCount, rawCount, reviewedCount, statuses, users, roles, currentPage: page });
+        console.log("User role:", userWithRole.role);
+    } catch (error) {
+        console.error("Error fetching user role:", error);
+        res.status(500).send('Internal server error.');
     }
 });
-
-
-router.get('/profile', authenticateJWT, (req, res) => {
-    res.render('profile', { user: req.user });  // Render profile
-});
-
->>>>>>> 3aaf9b0 (Initial commit)
 
 module.exports = router;

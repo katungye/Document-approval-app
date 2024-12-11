@@ -1,0 +1,134 @@
+<div class="container">
+    <div class="d-flex" id="wrapper">
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item"><a class="nav-link" href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <h1 class="mt-4">Reviewer Dashboard</h1>
+                <% if (user && user.role && user.role.id === 2) { %>
+                    <p>Welcome, <%= user.fname %>! You are a reviewer.</p>
+                  
+                <table id="contextTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Category</th>
+                            <th>Factor</th>
+                            <th>Services</th>
+                            <th>Assets</th>
+                            <th>Documentation</th>
+                            <th>Stakeholders</th>
+                            <th>Legal</th>
+                            <th>Location</th>
+                            <th>Timestamp</th>
+                            <th>Submitted By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% contexts.forEach(context => { %>
+                            <tr>
+                                <td><%= context.id %></td>
+                                <td><%= context.category %></td>
+                                <td><%= context.factor %></td>
+                                <td><%= context.services %></td>
+                                <td><%= context.assets %></td>
+                                <td><%= context.documentation %></td>
+                                <td><%= context.stakeholders %></td>
+                                <td><%= context.legal %></td>
+                                <td><%= context.location %></td>
+                                <td><%= context.timestamp %></td>
+                                <td><%= context.submitter ? context.submitter.fname + ' ' + context.submitter.lname : 'N/A' %></td>
+                                <td>
+                                    <% if (context.stage === 2) { %> <!-- Assuming 2 is the ID for reviewed -->
+                                        <button class="btn btn-warning btn-sm">Pending Approval</button>
+                                    <% } else { %>
+                                        <button class="btn btn-success btn-sm" onclick="openReviewContextModal('<%= context.id %>', '<%= context.category %>', '<%= context.factor %>', '<%= context.services %>', '<%= context.assets %>', '<%= context.documentation %>', '<%= context.stakeholders %>', '<%= context.legal %>', '<%= context.location %>')">Review</button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a></li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
+                        <% } %>
+                    </ul>
+                </nav>
+
+                <% } else { %>
+                    <p>You are not authorized to view this page.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for reviewing context -->
+<div class="modal fade" id="reviewContextModal" tabindex="-1" aria-labelledby="reviewContextModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewContextModalLabel">Review Context</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewContextForm" action="/reviewer/markAsReviewed" method="POST">
+                    <input type="hidden" id="contextId" name="contextId">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="factor" class="form-label">Factor</label>
+                        <input type="text" class="form-control" id="factor" name="factor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="services" class="form-label">Services</label>
+                        <input type="text" class="form-control" id="services" name="services">
+                    </div>
+                    <div class="mb-3">
+                        <label for="assets" class="form-label">Assets</label>
+                        <input type="text" class="form-control" id="assets" name="assets">
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentation" class="form-label">Documentation</label>
+                        <input type="text" class="form-control" id="documentation" name="documentation">
+                    </div>
+                    <div class="mb-3">
+                        <label for="stakeholders" class="form-label">Stakeholders</label>
+                        <input type="text" class="form-control" id="stakeholders" name="stakeholders">
+                    </div>
+                    <div class="mb-3">
+                        <label for="legal" class="form-label">Legal</label>
+                        <input type="text" class="form-control" id="legal" name="legal">
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mark as Reviewed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
