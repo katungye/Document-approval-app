@@ -1,7 +1,7 @@
 # Documentation Tracker
 
 ## Overview
-Documentation Tracker is a Node.js application designed to help APSS manage and track documentation effectively during the establishment of their context. It provides an intuitive interface for organizing, reviewing, and monitoring documentation statuses, ensuring that nothing is overlooked during the context establishment phases.
+Documentation Tracker is a Node.js application designed to help APSS manage and track documentation effectively during the establishment of their context. It provides an intuitive interface for organizing, reviewing, and monitoring documentation statuses, ensuring that nothing is overlooked during the context establishment phases when following the ISO / IEC 27005.
 
 ## Features
 - **Role-Based Access**: Supports Admin, Reviewer, and User roles with specific functionality for each.
